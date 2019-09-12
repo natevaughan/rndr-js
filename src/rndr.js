@@ -2,7 +2,7 @@ var rndr = (function() {
 
     /********************************************************
      *                   RENDER JS
-     *                 Version 0.1.0
+     *                 Version 0.1.1
      *             Nate Vaughan 2018-2019
      * A simple library for rendering dynamic HTML elements
      ********************************************************/
@@ -22,6 +22,13 @@ var rndr = (function() {
     var httpPut = 'Put';
     var httpPatch = 'Patch';
     var httpDelete = 'Delete';
+
+    /**
+     * Utility function to create a text node
+     * @param t the text
+     * @returns a new text node
+     */
+    function text(t) { return document.createTextNode(t) }
 
     /**
      * Make a rest call
@@ -76,7 +83,6 @@ var rndr = (function() {
                 newNode.addEventListener(name, listeners[name]);
             });
         }
-
         return newNode;
     }
 
@@ -92,8 +98,10 @@ var rndr = (function() {
         while (destination.firstChild) {
             destination.removeChild(destination.firstChild);
         }
-        if (typeof children === stringType || typeof children === numberType) {
+        if (typeof children === stringType) {
             destination.appendChild(text(children));
+        } else if (typeof children === numberType) {
+            destination.appendChild(text(cast(children, stringType)));
         } else if (typeof children === objectType && children !== null) {
             if (Array.isArray(children)) {
                 children.forEach(function(child) {
@@ -174,7 +182,6 @@ var rndr = (function() {
     rndr.button = function(children, attrs, listeners) { return createNode('button', children, attrs, listeners) };
     rndr.input = function(attrs, listeners) { return createNode('input', null, attrs, listeners) };
     rndr.img = function(attrs, listeners) { return createNode('img', null, attrs, listeners) };
-    rndr.text = function(t) { return document.createTextNode(t) };
     rndr.h1 = function(children, attrs, listeners) { return createNode('h1', children, attrs, listeners) };
     rndr.h2 = function(children, attrs, listeners) { return createNode('h2', children, attrs, listeners) };
     rndr.h3 = function(children, attrs, listeners) { return createNode('h3', children, attrs, listeners) };
